@@ -35,8 +35,8 @@ namespace BepuPhysicsUnity {
 
         public void UpdateBodyLerped(float value)
         {
-            CurrentPosition = Vector3.Lerp(CurrentPosition, TargetPosition, value);
-            CurrentRotation = Quaternion.Lerp(CurrentRotation, TargetRotation, value);
+            CurrentPosition = Vector3.Lerp(CurrentPosition, TargetPosition, value * Time.deltaTime);
+            CurrentRotation = Quaternion.Lerp(CurrentRotation, TargetRotation, value * Time.deltaTime);
             PhysicsUpdate.OnBodyUpdated(CurrentPosition, TargetRotation);
         }
 

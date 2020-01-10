@@ -23,10 +23,10 @@ public class InstantiateAtRandomPosition : MonoBehaviour
     {
         while(instantiatedObjects < numberOfPrefabs)
         {
-            var position = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
+            var position = new Vector3(Random.Range(-2, 2), Random.Range(-2, 2), Random.Range(-2, 2));
             Instantiate(prefab, position, Quaternion.identity);
             instantiatedObjects++;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
         }
     }
 }

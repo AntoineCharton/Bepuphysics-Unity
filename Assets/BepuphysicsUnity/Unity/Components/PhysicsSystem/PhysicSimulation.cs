@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System;
 using System.Collections;
+using System.Diagnostics;
 
 namespace BepuPhysicsUnity
 {
@@ -13,10 +14,16 @@ namespace BepuPhysicsUnity
     /// </summary>
     public class PhysicSimulation : BepuPhysicsUnity
     {
+        [Range(0.01f, 0.5f)]
+        public float TargetTimeStep = 0.1f;
+        public float StepsInterpolation = 20f;
+        public long physicsElapsed = 0;
+        public long totalElapsed = 0;
         public BodyDescription Body;
         private bool isThreadActive = false;
         Thread thread;
         long oldTime;
+        float TimeScale;
 
 
         public unsafe override void Initialize()
@@ -37,7 +44,7 @@ namespace BepuPhysicsUnity
 
         void UpdatePhysics(float dT)
         {
-            UpdatePhysics(null, null, Mathf.Max(0.01f, dT));
+            UpdatePhysics(null, null, dT);
             for (var i = 0; i < BodiesData.Count; i++)
             {
                 if (Simulation.Bodies.BodyExists(BodiesData[i].BodieID))
@@ -87,12 +94,15 @@ namespace BepuPhysicsUnity
             {
                 while (isThreadActive)
                 {
-                    const float targetTimeStep = 0.1f;
-                    long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                    float dT = (now - oldTime) * 0.01f; // / 1000
-                    Thread.Sleep(Math.Min(Mathf.Max(0,(int)(100 - (now - oldTime))), 200));
-                    oldTime = now;
-                    UpdatePhysics(targetTimeStep);
+                    const int oneSecond = 1000;
+                    Stopwatch stopWatch = new Stopwatch();
+                    stopWatch.Start();
+                    UpdatePhysics(TargetTimeStep);
+                    var timeRunned = stopWatch.ElapsedMilliseconds;
+                    physicsElapsed = timeRunned;
+                    Thread.Sleep(Convert.ToInt32(Mathf.Max(0, (TargetTimeStep * 1000) - timeRunned)));
+                    totalElapsed = stopWatch.ElapsedMilliseconds;
+                    stopWatch.Stop();
                 }
             }
             catch (Exception ex)
@@ -111,22 +121,15 @@ namespace BepuPhysicsUnity
 
         private void Update()
         {
-            //UpdatePhysics();
+            TimeScale = Time.timeScale;
             lock (BodiesData)
             {
                 foreach (var bodyData in BodiesData)
                 {
-                    bodyData.UpdateBodyLerped(0.2f);
+                    bodyData.UpdateBodyLerped(StepsInterpolation);
                 }
             }
-                //ThreadedUpdate();
-                //for(var i = 0; i < PhysicsGameObjects.Count; i++)
-                //{
-                //    Simulation.Bodies.GetDescription(i, out Body);
-                //    PhysicsGameObjects[i].transform.position = new UnityEngine.Vector3(Body.Pose.Position.X, Body.Pose.Position.Y, Body.Pose.Position.Z);
-                //    PhysicsGameObjects[i].transform.rotation = new UnityEngine.Quaternion(Body.Pose.Orientation.X, Body.Pose.Orientation.Y, Body.Pose.Orientation.Z, Body.Pose.Orientation.W);
-                //}
-            }
+        }
 
         public override void UpdatePhysics(Camera camera, Input input, float dt)
         {
