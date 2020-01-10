@@ -23,10 +23,10 @@ namespace BepuPhysicsUnity
             }
         }
 
-        private void OnShapeAdded(int id)
+        private void OnShapeAdded(int id, Vector3 position, Quaternion rotation)
         {
             ID = id;
-            //physicSpace.SubscribePhysicsUpdate(this, id);
+            //physicSpace.SubscribePhysicsUpdate(this, id, position, rotation);
         }
     }
 }

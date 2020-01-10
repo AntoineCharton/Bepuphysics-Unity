@@ -40,14 +40,22 @@ namespace BepuPhysicsUnity {
             PhysicsUpdate.OnBodyUpdated(CurrentPosition, TargetRotation);
         }
 
-        public void SetPosition(Vector3 position)
+        public void SetPosition(Vector3 position, bool lerpValue = true)
         {
             TargetPosition = position;
+            if(!lerpValue)
+            {
+                CurrentPosition = position;
+            }
         }
 
-        public void SetRotation(Quaternion rotation)
+        public void SetRotation(Quaternion rotation, bool lerpValue = true)
         {
             TargetRotation = rotation;
+            if (!lerpValue)
+            {
+                TargetRotation = rotation;
+            }
         }
     }
 }

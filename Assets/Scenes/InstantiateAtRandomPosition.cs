@@ -7,6 +7,7 @@ public class InstantiateAtRandomPosition : MonoBehaviour
     public GameObject prefab;
     public int numberOfPrefabs;
     public int instantiatedObjects;
+    public float randomRange;
     // Start is called before the first frame update
     void Awake()
     {
@@ -23,10 +24,13 @@ public class InstantiateAtRandomPosition : MonoBehaviour
     {
         while(instantiatedObjects < numberOfPrefabs)
         {
-            var position = new Vector3(Random.Range(-2, 2), Random.Range(-2, 2), Random.Range(-2, 2));
+            var position = new Vector3(Random.Range(-randomRange, randomRange), Random.Range(-randomRange, randomRange), Random.Range(-randomRange, randomRange));
             Instantiate(prefab, position, Quaternion.identity);
             instantiatedObjects++;
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForEndOfFrame();
+            position = new Vector3(Random.Range(-randomRange, randomRange), Random.Range(-randomRange, randomRange), Random.Range(-randomRange, randomRange));
+            Instantiate(prefab, position, Quaternion.identity);
+            instantiatedObjects++;
         }
     }
 }
