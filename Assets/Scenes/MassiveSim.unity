@@ -1197,6 +1197,7 @@ GameObject:
   - component: {fileID: 801272971}
   - component: {fileID: 801272970}
   - component: {fileID: 801272972}
+  - component: {fileID: 801272973}
   m_Layer: 0
   m_Name: PhysicsSystem
   m_TagString: Untagged
@@ -1247,9 +1248,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 998851cf8f4c18545b74794a8f25507b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefab: {fileID: 8920147350363823717, guid: 4d7ffdfecc47e3d4593e113e626f67f8, type: 3}
+  numberOfPrefabs: 1000
+  instantiatedObjects: 10
+  randomRange: 10
+--- !u!114 &801272973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801272969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 998851cf8f4c18545b74794a8f25507b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   prefab: {fileID: 8101169465501800674, guid: 7cec156307bd37247a19d493821b7f65, type: 3}
   numberOfPrefabs: 100
-  instantiatedObjects: 0
+  instantiatedObjects: 10
+  randomRange: 10
 --- !u!1 &857863554
 GameObject:
   m_ObjectHideFlags: 0

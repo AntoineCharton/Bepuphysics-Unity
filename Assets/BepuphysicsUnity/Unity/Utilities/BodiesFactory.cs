@@ -62,33 +62,33 @@ namespace BepuPhysicsUnity {
                     boxShape.ComputeInertia(mass, out var boxInertia);
                     var boxIndex = simulation.Shapes.Add(boxShape);
                     var boxPose = new RigidPose(position, rotation);
-                    simulation.Bodies.Add(BodyDescription.CreateDynamic(boxPose,
+                    var boxHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(boxPose,
                       boxInertia,
                       new CollidableDescription(boxIndex, 0.1f),
                       new BodyActivityDescription(0.01f)));
-                    return boxIndex.Index;
+                    return boxHandle;
                 case ISphereDetection sphereDetection:
                     ISphereDetection sphere = shapeType as ISphereDetection;
                     var sphereShape = new Sphere(sphere.GetRadius());
                     sphereShape.ComputeInertia(mass, out var sphereInertia);
                     var sphereIndex = simulation.Shapes.Add(sphereShape);
                     var spherePose = new RigidPose(position, rotation);
-                    simulation.Bodies.Add(BodyDescription.CreateDynamic(spherePose,
+                    var sphereHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(spherePose,
                       sphereInertia,
                       new CollidableDescription(sphereIndex, 0.1f),
                       new BodyActivityDescription(0.01f)));
-                    return sphereIndex.Index;
+                    return sphereHandle;
                 case ICapsuleDetection capsuleDetection:
                     ICapsuleDetection capsule = shapeType as ICapsuleDetection;
                     var capsuleShape = new Capsule(capsule.GetRadius(), capsule.GetHeight());
                     capsuleShape.ComputeInertia(mass, out var capsuleInertia);
                     var capsuleIndex = simulation.Shapes.Add(capsuleShape);
                     var capsulePose = new RigidPose(position, rotation);
-                    simulation.Bodies.Add(BodyDescription.CreateDynamic(capsulePose,
+                    var capsuleHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(capsulePose,
                       capsuleInertia,
                       new CollidableDescription(capsuleIndex, 0.1f),
                       new BodyActivityDescription(0.01f)));
-                    return capsuleIndex.Index;
+                    return capsuleHandle;
                 default:
                     throw new System.ArgumentException("shape Type not found could not initilize physics", "shapeType");
             }
@@ -103,28 +103,28 @@ namespace BepuPhysicsUnity {
                     var boxShape = new Box(box.GetSize().x, box.GetSize().y, box.GetSize().z);
                     var boxIndex = simulation.Shapes.Add(boxShape);
                     var boxPose = new RigidPose(position, rotation);
-                    simulation.Bodies.Add(BodyDescription.CreateKinematic(boxPose,
+                    var boxeHandle = simulation.Bodies.Add(BodyDescription.CreateKinematic(boxPose,
                       new CollidableDescription(boxIndex, 0.1f),
                       new BodyActivityDescription(0.01f)));
-                    return boxIndex.Index;
+                    return boxeHandle;
                 case ISphereDetection sphereDetection:
                     ISphereDetection sphere = shapeType as ISphereDetection;
                     var sphereShape = new Sphere(sphere.GetRadius());
                     var sphereIndex = simulation.Shapes.Add(sphereShape);
                     var spherePose = new RigidPose(position, rotation);
-                    simulation.Bodies.Add(BodyDescription.CreateKinematic(spherePose,
+                    var sphereHandle = simulation.Bodies.Add(BodyDescription.CreateKinematic(spherePose,
                       new CollidableDescription(sphereIndex, 0.1f),
                       new BodyActivityDescription(0.01f)));
-                    return sphereIndex.Index;
+                    return sphereHandle;
                 case ICapsuleDetection capsuleDetection:
                     ICapsuleDetection capsule = shapeType as ICapsuleDetection;
                     var capsuleShape = new Capsule(capsule.GetRadius(), capsule.GetHeight());
                     var capsuleIndex = simulation.Shapes.Add(capsuleShape);
                     var capsulePose = new RigidPose(position, rotation);
-                    simulation.Bodies.Add(BodyDescription.CreateKinematic(capsulePose,
+                    var capsuleHandle = simulation.Bodies.Add(BodyDescription.CreateKinematic(capsulePose,
                       new CollidableDescription(capsuleIndex, 0.1f),
                       new BodyActivityDescription(0.01f)));
-                    return capsuleIndex.Index;
+                    return capsuleHandle;
                 default:
                     throw new System.ArgumentException("shape Type not found could not initilize physics", "shapeType");
             }

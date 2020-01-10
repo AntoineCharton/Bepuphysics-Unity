@@ -28,9 +28,6 @@ public class InstantiateAtRandomPosition : MonoBehaviour
             Instantiate(prefab, position, Quaternion.identity);
             instantiatedObjects++;
             yield return new WaitForEndOfFrame();
-            position = new Vector3(Random.Range(-randomRange, randomRange), Random.Range(-randomRange, randomRange), Random.Range(-randomRange, randomRange));
-            Instantiate(prefab, position, Quaternion.identity);
-            instantiatedObjects++;
         }
     }
 }

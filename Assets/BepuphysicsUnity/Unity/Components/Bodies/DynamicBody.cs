@@ -9,7 +9,7 @@ namespace BepuPhysicsUnity {
         private DetectionBehaviour Detection;
         [SerializeField]
         private float mass;
-        private int ID;
+        public int ID;
         private BepuPhysicsUnity physicSpace;
 
         public void OnBodyUpdated(Vector3 position, Quaternion rotation)
