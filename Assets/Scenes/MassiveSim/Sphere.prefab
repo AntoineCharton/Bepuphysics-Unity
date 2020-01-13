@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 1
+  ID: 0
 --- !u!114 &7912643835051090367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,4 +108,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ca7db31ff8e0b04a96a31c9d259a37b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Radius: 1
+  Radius: 0.5

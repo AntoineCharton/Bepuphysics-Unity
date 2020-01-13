@@ -12,7 +12,6 @@ namespace BepuPhysicsUnity {
     {
         [Range(0.01f, 0.5f)]
         public float TargetTimeStep = 0.1f;
-        public Vector3 Gravity;
         public long physicsElapsed = 0;
         public long totalElapsed = 0;
         Thread thread;
@@ -20,8 +19,7 @@ namespace BepuPhysicsUnity {
 
         public unsafe override void Initialize()
         {
-            BodiesData = new List<BodyUpdateData>();
-            Simulation = Simulation.Create(BufferPool, new BepuNarrowPhaseCallbacks(), new BepuPoseIntegratorCallbacks(new System.Numerics.Vector3(Gravity.x, -Gravity.y, Gravity.z)));
+            SetupSimulation();
             StartThread();
         }
 

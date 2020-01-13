@@ -26,7 +26,7 @@ namespace BepuPhysicsUnity
         public SimpleThreadDispatcher ThreadDispatcher { get; private set; }
         protected List<BodyUpdateData> PhysicUpdates;
         bool isInitialized = false;
-        public delegate void PhysicObjectAddedToSimulation(int ID, Vector3 position, Quaternion rotation);
+        public delegate void PhysicObjectAddedToSimulation(int ID);
         protected List<PhysicBodyData> AddedBodies;
         protected List<BodyUpdateData> BodiesData;
 
@@ -38,14 +38,12 @@ namespace BepuPhysicsUnity
             InitializePhysics();
         }
 
-        public void SubscribePhysicsUpdate(IBodyUpdate physicsUpdate, int bodieID, Vector3 defaultPosition, Quaternion defaultRotation)
+        public void SubscribePhysicsUpdate(IBodyUpdate physicsUpdate, int bodieID)
         {
             var physicUpdate = new BodyUpdateData(physicsUpdate, bodieID);
-            physicUpdate.SetPosition(defaultPosition, false);
-            physicUpdate.SetRotation(defaultRotation, false);
             lock (BodiesData)
             {
-                BodiesData.Add(physicUpdate);
+                BodiesData.Insert(bodieID, physicUpdate);
             }
         }
 

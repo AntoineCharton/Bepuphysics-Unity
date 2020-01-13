@@ -6,6 +6,5 @@ namespace BepuPhysicsUnity
 {
     public abstract class DetectionBehaviour : PhysicsComponent
     {
-        public abstract object GetShapeType();
     }
 }

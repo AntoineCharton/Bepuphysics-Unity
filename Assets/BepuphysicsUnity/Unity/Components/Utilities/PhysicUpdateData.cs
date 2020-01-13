@@ -11,6 +11,8 @@ namespace BepuPhysicsUnity {
         public Vector3 CurrentPosition;
         public Quaternion TargetRotation;
         public Quaternion CurrentRotation;
+        public bool IsAddedToSimulation;
+        private bool isFirstBodyUpdate = true;
 
         public BodyUpdateData(IBodyUpdate physicsUpdate, int bodieID, Vector3 position, Quaternion rotation) 
         {
@@ -18,6 +20,7 @@ namespace BepuPhysicsUnity {
             BodieID = bodieID;
             TargetPosition = position;
             TargetRotation = rotation;
+            IsAddedToSimulation = false;
         }
 
         public BodyUpdateData(IBodyUpdate physicsUpdate, int bodieID)
@@ -26,6 +29,7 @@ namespace BepuPhysicsUnity {
             BodieID = bodieID;
             TargetPosition = Vector3.zero;
             TargetRotation = Quaternion.identity;
+            IsAddedToSimulation = false;
         }
 
         public void UpdateBody()
@@ -35,8 +39,16 @@ namespace BepuPhysicsUnity {
 
         public void UpdateBodyLerped(float value)
         {
-            CurrentPosition = Vector3.Lerp(CurrentPosition, TargetPosition, value * Time.deltaTime);
-            CurrentRotation = Quaternion.Lerp(CurrentRotation, TargetRotation, value * Time.deltaTime);
+            if (!isFirstBodyUpdate)
+            {
+                CurrentPosition = Vector3.Lerp(CurrentPosition, TargetPosition, value);
+                CurrentRotation = Quaternion.Lerp(CurrentRotation, TargetRotation, value);
+            } else
+            {
+                CurrentPosition = TargetPosition;
+                CurrentRotation = TargetRotation;
+                isFirstBodyUpdate = false;
+            }
             PhysicsUpdate.OnBodyUpdated(CurrentPosition, TargetRotation);
         }
 

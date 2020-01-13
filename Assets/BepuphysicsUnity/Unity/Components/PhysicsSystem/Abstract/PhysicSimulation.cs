@@ -14,8 +14,15 @@ namespace BepuPhysicsUnity
     /// </summary>
     public abstract class PhysicSimulation : BepuPhysicsUnity
     {
-        public float StepsInterpolation = 20f;
+        public Vector3 Gravity;
+        public float StepsInterpolation = 0.5f;
         public BodyDescription Body;
+
+        protected void SetupSimulation()
+        {
+            BodiesData = new List<BodyUpdateData>();
+            Simulation = Simulation.Create(BufferPool, new BepuNarrowPhaseCallbacks(), new BepuPoseIntegratorCallbacks(new System.Numerics.Vector3(Gravity.x, -Gravity.y, Gravity.z)));
+        }
 
         protected void UpdatePhysics(float dT)
         {
@@ -28,10 +35,12 @@ namespace BepuPhysicsUnity
                     if (Simulation.Bodies.BodyExists(BodiesData[i].BodieID))
                     {
                         Simulation.Bodies.GetDescription(BodiesData[i].BodieID, out var BodyDescription);
+                        BodiesData[i].IsAddedToSimulation = true;
                         BodiesData[i].SetPosition(new Vector3(BodyDescription.Pose.Position.X, BodyDescription.Pose.Position.Y, BodyDescription.Pose.Position.Z));
                         BodiesData[i].SetRotation(new Quaternion(BodyDescription.Pose.Orientation.X, BodyDescription.Pose.Orientation.Y, BodyDescription.Pose.Orientation.Z, BodyDescription.Pose.Orientation.W));
                     } else
                     {
+                        BodiesData[i].IsAddedToSimulation = false;
                     }
                 }
             }
@@ -45,9 +54,7 @@ namespace BepuPhysicsUnity
                         addedBody.BodyType,
                         addedBody.BodyShape,
                         addedBody.Mass);
-                    addedBody.PhysicObjectAddedToSimulation(id,
-                        new Vector3(addedBody.Position.X, addedBody.Position.Y, addedBody.Position.Z), 
-                        new Quaternion(addedBody.Rotation.X, addedBody.Rotation.Y, addedBody.Rotation.Z, addedBody.Rotation.W));
+                    addedBody.PhysicObjectAddedToSimulation(id);
                 }
                 AddedBodies.Clear();
             }
@@ -61,9 +68,7 @@ namespace BepuPhysicsUnity
                         addedBody.BodyType,
                         addedBody.BodyShape,
                         addedBody.Mass);
-                    addedBody.PhysicObjectAddedToSimulation(id,
-                        new Vector3(addedBody.Position.X, addedBody.Position.Y, addedBody.Position.Z),
-                        new Quaternion(addedBody.Rotation.X, addedBody.Rotation.Y, addedBody.Rotation.Z, addedBody.Rotation.W));
+                    addedBody.PhysicObjectAddedToSimulation(id);
 
                 }
                 AddedStaticBodies.Clear();
@@ -71,13 +76,19 @@ namespace BepuPhysicsUnity
             }
         }
 
+        void UpdateBodiesUnity(int startingCount, int targetCount)
+        {
+
+        }
+
         private void Update()
         {
             lock (BodiesData)
             {
-                foreach (var bodyData in BodiesData)
+                for (var i = 0; i < BodiesData.Count; i++)
                 {
-                    bodyData.UpdateBodyLerped(StepsInterpolation);
+                    if(BodiesData[i].IsAddedToSimulation)
+                        BodiesData[i].UpdateBodyLerped(StepsInterpolation);
                 }
             }
         }

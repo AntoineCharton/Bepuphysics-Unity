@@ -24,15 +24,15 @@ namespace BepuPhysicsUnity {
             Detection = GetComponent<DetectionBehaviour>();
             if(PhysicsSpaces.Count > 0)
             {
-                PhysicsSpaces[0].AddShape(transform.position, transform.rotation, this, Detection.GetShapeType(),mass, OnShapeAdded);
+                PhysicsSpaces[0].AddShape(transform.position, transform.rotation, this, Detection,mass, OnShapeAdded);
                 physicSpace = PhysicsSpaces[0];
             }
         }
 
-        private void OnShapeAdded(int id, Vector3 position, Quaternion rotation)
+        private void OnShapeAdded(int id)
         {
             ID = id;
-            physicSpace.SubscribePhysicsUpdate(this, id, position, rotation);
+            physicSpace.SubscribePhysicsUpdate(this, id);
         }
     }
 }

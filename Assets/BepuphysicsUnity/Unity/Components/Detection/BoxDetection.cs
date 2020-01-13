@@ -23,9 +23,5 @@ namespace BepuPhysicsUnity
             return Size;
         }
 
-        public override object GetShapeType()
-        {
-            return this;
-        }
     }
 }

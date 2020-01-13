@@ -34,19 +34,19 @@ namespace BepuPhysicsUnity {
                     var boxShape = new Box(box.GetSize().x, box.GetSize().y, box.GetSize().z);
                     return simulation.Statics.Add(new StaticDescription(new System.Numerics.Vector3(position.X, position.Y, position.Z),
                         new BepuUtilities.Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W),
-                        new CollidableDescription(simulation.Shapes.Add(boxShape), 0.1f)));
+                        new CollidableDescription(simulation.Shapes.Add(boxShape), 0.01f)));
                 case ISphereDetection sphereDetection:
                     ISphereDetection sphere = shapeType as ISphereDetection;
                     var sphereShape = new Sphere(sphere.GetRadius());
                     return simulation.Statics.Add(new StaticDescription(new System.Numerics.Vector3(position.X, position.Y, position.Z),
                         new BepuUtilities.Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W),
-                        new CollidableDescription(simulation.Shapes.Add(sphereShape), 0.1f)));
+                        new CollidableDescription(simulation.Shapes.Add(sphereShape), 0.01f)));
                 case ICapsuleDetection capsuleDetection:
                     ICapsuleDetection capsule = shapeType as ICapsuleDetection;
                     var capsuleShape = new Capsule(capsule.GetRadius(), capsule.GetHeight());
                     return simulation.Statics.Add(new StaticDescription(new System.Numerics.Vector3(position.X, position.Y, position.Z),
                         new BepuUtilities.Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W),
-                        new CollidableDescription(simulation.Shapes.Add(capsuleShape), 0.1f)));
+                        new CollidableDescription(simulation.Shapes.Add(capsuleShape), 0.01f)));
                 default:
                     throw new System.ArgumentException("Body type not found could not initilize physics", "bodyType");
             }
@@ -64,7 +64,7 @@ namespace BepuPhysicsUnity {
                     var boxPose = new RigidPose(position, rotation);
                     var boxHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(boxPose,
                       boxInertia,
-                      new CollidableDescription(boxIndex, 0.1f),
+                      new CollidableDescription(boxIndex, 0.01f),
                       new BodyActivityDescription(0.01f)));
                     return boxHandle;
                 case ISphereDetection sphereDetection:
@@ -75,7 +75,7 @@ namespace BepuPhysicsUnity {
                     var spherePose = new RigidPose(position, rotation);
                     var sphereHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(spherePose,
                       sphereInertia,
-                      new CollidableDescription(sphereIndex, 0.1f),
+                      new CollidableDescription(sphereIndex, 0.01f),
                       new BodyActivityDescription(0.01f)));
                     return sphereHandle;
                 case ICapsuleDetection capsuleDetection:
@@ -86,7 +86,7 @@ namespace BepuPhysicsUnity {
                     var capsulePose = new RigidPose(position, rotation);
                     var capsuleHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(capsulePose,
                       capsuleInertia,
-                      new CollidableDescription(capsuleIndex, 0.1f),
+                      new CollidableDescription(capsuleIndex, 0.01f),
                       new BodyActivityDescription(0.01f)));
                     return capsuleHandle;
                 default:
@@ -104,7 +104,7 @@ namespace BepuPhysicsUnity {
                     var boxIndex = simulation.Shapes.Add(boxShape);
                     var boxPose = new RigidPose(position, rotation);
                     var boxeHandle = simulation.Bodies.Add(BodyDescription.CreateKinematic(boxPose,
-                      new CollidableDescription(boxIndex, 0.1f),
+                      new CollidableDescription(boxIndex, 0.01f),
                       new BodyActivityDescription(0.01f)));
                     return boxeHandle;
                 case ISphereDetection sphereDetection:
@@ -113,7 +113,7 @@ namespace BepuPhysicsUnity {
                     var sphereIndex = simulation.Shapes.Add(sphereShape);
                     var spherePose = new RigidPose(position, rotation);
                     var sphereHandle = simulation.Bodies.Add(BodyDescription.CreateKinematic(spherePose,
-                      new CollidableDescription(sphereIndex, 0.1f),
+                      new CollidableDescription(sphereIndex, 0.01f),
                       new BodyActivityDescription(0.01f)));
                     return sphereHandle;
                 case ICapsuleDetection capsuleDetection:
@@ -122,7 +122,7 @@ namespace BepuPhysicsUnity {
                     var capsuleIndex = simulation.Shapes.Add(capsuleShape);
                     var capsulePose = new RigidPose(position, rotation);
                     var capsuleHandle = simulation.Bodies.Add(BodyDescription.CreateKinematic(capsulePose,
-                      new CollidableDescription(capsuleIndex, 0.1f),
+                      new CollidableDescription(capsuleIndex, 0.01f),
                       new BodyActivityDescription(0.01f)));
                     return capsuleHandle;
                 default:

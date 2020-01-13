@@ -8,23 +8,19 @@ namespace BepuPhysicsUnity
     public class SphereDetection : DetectionBehaviour, ISphereDetection
     {
         [SerializeField]
-        private float Radius = 1;
+        private float Radius = 0.5f;
 
         public float GetRadius()
         {
             return Radius;
         }
 
-        public override object GetShapeType()
-        {
-            return this;
-        }
+
 
         void OnDrawGizmosSelected()
         {
-            const float divideBy2 = 0.5f;
             Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(transform.position, Radius * divideBy2);
+            Gizmos.DrawWireSphere(transform.position, Radius);
         }
     }
 }

@@ -22,11 +22,6 @@ namespace BepuPhysicsUnity
             return Radius;
         }
 
-        public override object GetShapeType()
-        {
-            return this;
-        }
-
         void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.cyan;
