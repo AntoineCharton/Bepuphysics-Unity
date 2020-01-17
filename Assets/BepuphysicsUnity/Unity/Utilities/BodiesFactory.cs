@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace BepuPhysicsUnity {
     public static class BodiesFactory {
+        private const string CouldNotInitializeMessage = "shape Type not found could not initilize physics";
 
         public static int AddBody(Simulation simulation, System.Numerics.Vector3 position,  BepuUtilities.Quaternion rotation, object bodyType, object shapeType, float mass = 1)
         {
@@ -21,7 +22,7 @@ namespace BepuPhysicsUnity {
                 case IKinematicBody kinematicBody:
                     return AddKinematicBody(simulation, position, rotation, shapeType);
                 default:
-                    throw new System.ArgumentException("Body type not found could not initilize physics","bodyType");
+                    throw new System.ArgumentException(message: CouldNotInitializeMessage, nameof(shapeType));
             }
         }
 
@@ -48,7 +49,7 @@ namespace BepuPhysicsUnity {
                         new BepuUtilities.Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W),
                         new CollidableDescription(simulation.Shapes.Add(capsuleShape), 0.01f)));
                 default:
-                    throw new System.ArgumentException("Body type not found could not initilize physics", "bodyType");
+                    throw new System.ArgumentException(message: CouldNotInitializeMessage, nameof(shapeType));
             }
         }
 
@@ -90,7 +91,7 @@ namespace BepuPhysicsUnity {
                       new BodyActivityDescription(0.01f)));
                     return capsuleHandle;
                 default:
-                    throw new System.ArgumentException("shape Type not found could not initilize physics", "shapeType");
+                    throw new ArgumentException(message: CouldNotInitializeMessage, nameof(shapeType));
             }
         }
 
@@ -126,7 +127,7 @@ namespace BepuPhysicsUnity {
                       new BodyActivityDescription(0.01f)));
                     return capsuleHandle;
                 default:
-                    throw new System.ArgumentException("shape Type not found could not initilize physics", "shapeType");
+                    throw new System.ArgumentException(message: CouldNotInitializeMessage, nameof(shapeType));
             }
         }
     }

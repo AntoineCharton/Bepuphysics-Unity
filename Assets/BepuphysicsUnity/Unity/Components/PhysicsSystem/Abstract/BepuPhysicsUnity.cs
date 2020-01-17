@@ -24,14 +24,37 @@ namespace BepuPhysicsUnity
         /// Gets the thread dispatcher available for use by the simulation.
         /// </summary>
         public SimpleThreadDispatcher ThreadDispatcher { get; private set; }
-        protected List<BodyUpdateData> PhysicUpdates;
+
+        private List<PhysicBodyData> addedStaticBodies;
+        protected List<PhysicBodyData> GetAddedStaticBodies() { return addedStaticBodies; }
+        protected void SetAddedStaticBodies(List<PhysicBodyData> value) { addedStaticBodies = value; }
+
+        private List<BodyUpdateData> staticBodiesData;
+        protected List<BodyUpdateData> GetStaticBodiesData() { return staticBodiesData; }
+        protected void SetStaticBodiesData(List<BodyUpdateData> value) { staticBodiesData = value; }
+
+        private List<BodyUpdateData> bodiesData;
+        protected List<BodyUpdateData> GetBodiesData() { return bodiesData;}
+        protected void SetBodiesData(List<BodyUpdateData> value) { bodiesData = value; }
+
+        private List<PhysicBodyData> addedBodies;
+        protected List<PhysicBodyData> GetAddedBodies() { return addedBodies; }
+        protected void SetAddedBodies(List<PhysicBodyData> value){ addedBodies = value;}
+
+        private List<int> dynamicBodyToRemove;
+        protected List<int> GetDynamicBodiesToRemove() { return dynamicBodyToRemove; }
+        protected void SetDynamicBodiesToRemove(List<int> id) { dynamicBodyToRemove = id; }
+
+        private List<int> staticBodiesToRemove;
+        protected List<int> GetStaticBodiesToRemove() { return staticBodiesToRemove; }
+        protected void SetStaticBodiesToRemove(List<int> id) { staticBodiesToRemove = id; }
+
+        private List<BodyUpdateData> physicUpdates;
+        protected List<BodyUpdateData> GetPhysicUpdates() { return physicUpdates; }
+        protected void SetPhysicUpdates(List<BodyUpdateData> value) { physicUpdates = value; }
+
         bool isInitialized = false;
         public delegate void PhysicObjectAddedToSimulation(int ID);
-        protected List<PhysicBodyData> AddedBodies;
-        protected List<BodyUpdateData> BodiesData;
-
-        protected List<PhysicBodyData> AddedStaticBodies;
-        protected List<BodyUpdateData> StaticBodiesData;
 
         private void Awake()
         {
@@ -41,9 +64,9 @@ namespace BepuPhysicsUnity
         public void SubscribePhysicsUpdate(IBodyUpdate physicsUpdate, int bodieID)
         {
             var physicUpdate = new BodyUpdateData(physicsUpdate, bodieID);
-            lock (BodiesData)
+            lock (GetBodiesData())
             {
-                BodiesData.Insert(bodieID, physicUpdate);
+                GetBodiesData().Add(physicUpdate);
             }
         }
 
@@ -51,11 +74,13 @@ namespace BepuPhysicsUnity
         {
             if (isInitialized)
                 return;
-           
-            AddedBodies = new List<PhysicBodyData>();
-            PhysicUpdates = new List<BodyUpdateData>();
-            AddedStaticBodies = new List<PhysicBodyData>();
-            StaticBodiesData = new List<BodyUpdateData>();
+
+            SetAddedBodies(new List<PhysicBodyData>());
+            SetPhysicUpdates(new List<BodyUpdateData>());
+            SetAddedStaticBodies(new List<PhysicBodyData>());
+            SetStaticBodiesData(new List<BodyUpdateData>());
+            SetDynamicBodiesToRemove(new List<int>());
+            SetStaticBodiesToRemove(new List<int>());
             isInitialized = true;
             BufferPool = new BufferPool();
             ThreadDispatcher = new SimpleThreadDispatcher(Environment.ProcessorCount);
@@ -81,9 +106,9 @@ namespace BepuPhysicsUnity
                 InitializePhysics();
 
             var newBody = new PhysicBodyData(position, rotation, bodyType, bodyShape, mass, physicObjectAddedToSimulation);
-            lock (AddedBodies)
+            lock (GetAddedBodies())
             {
-                AddedBodies.Add(newBody);
+                GetAddedBodies().Add(newBody);
             }
         }
 
@@ -93,9 +118,25 @@ namespace BepuPhysicsUnity
                 InitializePhysics();
 
             var newBody = new PhysicBodyData(position, rotation, bodyType, bodyShape, mass, physicObjectAddedToSimulation);
-            lock (AddedStaticBodies)
+            lock (GetAddedStaticBodies())
             {
-                AddedStaticBodies.Add(newBody);
+                GetAddedStaticBodies().Add(newBody);
+            }
+        }
+
+        public void RemoveStaticBody(int ID)
+        {
+            lock (staticBodiesToRemove)
+            {
+                staticBodiesToRemove.Add(ID);
+            }
+        }
+
+        public void RemoveDynamicBody(int ID)
+        {
+            lock (dynamicBodyToRemove)
+            {
+                dynamicBodyToRemove.Add(ID);
             }
         }
 
@@ -110,27 +151,6 @@ namespace BepuPhysicsUnity
                 BufferPool.Clear();
                 ThreadDispatcher.Dispose();
             }
-        }
-    }
-
-    public struct PhysicBodyData
-    {
-        public System.Numerics.Vector3 Position;
-        public BepuUtilities.Quaternion Rotation;
-        public object BodyType;
-        public object BodyShape;
-        public float Mass;
-        public BepuPhysicsUnity.PhysicObjectAddedToSimulation PhysicObjectAddedToSimulation;
-
-        public PhysicBodyData(UnityEngine.Vector3 position, UnityEngine.Quaternion rotation, object bodyType, object bodyShape, float mass, BepuPhysicsUnity.PhysicObjectAddedToSimulation physicObjectAddedToSimulation)
-        {
-            Position = new System.Numerics.Vector3(position.x, position.y, position.z);
-            Rotation = new BepuUtilities.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
-            BodyType = bodyType;
-            BodyShape = bodyShape;
-            Mass = mass;
-            PhysicObjectAddedToSimulation = physicObjectAddedToSimulation;
-
         }
     }
 }

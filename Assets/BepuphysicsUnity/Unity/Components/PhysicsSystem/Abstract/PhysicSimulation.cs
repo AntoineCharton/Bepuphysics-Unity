@@ -14,40 +14,98 @@ namespace BepuPhysicsUnity
     /// </summary>
     public abstract class PhysicSimulation : BepuPhysicsUnity
     {
-        public Vector3 Gravity;
-        public float StepsInterpolation = 0.5f;
-        public BodyDescription Body;
+        [SerializeField]
+        private Vector3 Gravity = new Vector3(0,10,0);
+        [SerializeField]
+        private float StepsInterpolation = 0.5f;
+
+        public void SetGravity(Vector3 gravity)
+        {
+            Gravity = gravity;
+        }
+
+        public Vector3 GetGravity()
+        {
+            return Gravity;
+        }
+
+        public void SetStepsInterpolation(float stepsInterpolation)
+        {
+            StepsInterpolation = stepsInterpolation;
+        }
+
+        public float GetStepsInterpolation()
+        {
+            return StepsInterpolation;
+        }
 
         protected void SetupSimulation()
         {
-            BodiesData = new List<BodyUpdateData>();
+            SetBodiesData(new List<BodyUpdateData>());
             Simulation = Simulation.Create(BufferPool, new BepuNarrowPhaseCallbacks(), new BepuPoseIntegratorCallbacks(new System.Numerics.Vector3(Gravity.x, -Gravity.y, Gravity.z)));
         }
 
         protected void UpdatePhysics(float dT)
         {
-            UpdatePhysics(null, null, dT);
-            lock (BodiesData)
+            lock (GetDynamicBodiesToRemove())
             {
-                for (var i = 0; i < BodiesData.Count; i++)
+                foreach(var body in GetDynamicBodiesToRemove())
                 {
-    
-                    if (Simulation.Bodies.BodyExists(BodiesData[i].BodieID))
+                    lock (GetBodiesData())
                     {
-                        Simulation.Bodies.GetDescription(BodiesData[i].BodieID, out var BodyDescription);
-                        BodiesData[i].IsAddedToSimulation = true;
-                        BodiesData[i].SetPosition(new Vector3(BodyDescription.Pose.Position.X, BodyDescription.Pose.Position.Y, BodyDescription.Pose.Position.Z));
-                        BodiesData[i].SetRotation(new Quaternion(BodyDescription.Pose.Orientation.X, BodyDescription.Pose.Orientation.Y, BodyDescription.Pose.Orientation.Z, BodyDescription.Pose.Orientation.W));
+                        Simulation.Bodies.Remove(body);
+                        for (int i = 0; i < GetBodiesData().Count; i++)
+                        {
+                            if (GetBodiesData()[i].BodieID == body)
+                            {
+                                GetBodiesData().RemoveAt(i);
+                            }
+                        }
+                    }
+                }
+                GetDynamicBodiesToRemove().Clear();
+            }
+
+            lock (GetStaticBodiesToRemove())
+            {
+                foreach (var body in GetStaticBodiesToRemove())
+                {
+                    lock (GetStaticBodiesData())
+                    {
+                        Simulation.Statics.Remove(body);
+                        for (int i = 0; i < GetStaticBodiesData().Count; i++)
+                        {
+                            if (GetStaticBodiesData()[i].BodieID == body)
+                            {
+                                GetStaticBodiesData().RemoveAt(i);
+                            }
+                        }
+                    }
+                }
+                GetStaticBodiesToRemove().Clear();
+            }
+
+            UpdatePhysics(null, null, dT);
+            lock (GetBodiesData())
+            {
+                for (var i = 0; i < GetBodiesData().Count; i++)
+                {
+                    if (Simulation.Bodies.BodyExists(GetBodiesData()[i].BodieID))
+                    {
+                        Simulation.Bodies.GetDescription(GetBodiesData()[i].BodieID, out var BodyDescription);
+                        GetBodiesData()[i].IsAddedToSimulation = true;
+                        GetBodiesData()[i].SetPosition(new Vector3(BodyDescription.Pose.Position.X, BodyDescription.Pose.Position.Y, BodyDescription.Pose.Position.Z));
+                        GetBodiesData()[i].SetRotation(new Quaternion(BodyDescription.Pose.Orientation.X, BodyDescription.Pose.Orientation.Y, BodyDescription.Pose.Orientation.Z, BodyDescription.Pose.Orientation.W));
                     } else
                     {
-                        BodiesData[i].IsAddedToSimulation = false;
+                        GetBodiesData()[i].IsAddedToSimulation = false;
                     }
                 }
             }
 
-            lock (AddedBodies)
+            lock (GetAddedBodies())
             {
-                foreach (var addedBody in AddedBodies)
+                foreach (var addedBody in GetAddedBodies())
                 {
                     var id = BodiesFactory.AddBody(Simulation, addedBody.Position,
                         addedBody.Rotation,
@@ -56,12 +114,12 @@ namespace BepuPhysicsUnity
                         addedBody.Mass);
                     addedBody.PhysicObjectAddedToSimulation(id);
                 }
-                AddedBodies.Clear();
+                GetAddedBodies().Clear();
             }
 
-            lock (AddedStaticBodies)
+            lock (GetAddedStaticBodies())
             {
-                foreach (var addedBody in AddedStaticBodies)
+                foreach (var addedBody in GetAddedStaticBodies())
                 {
                     var id = BodiesFactory.AddBody(Simulation, addedBody.Position,
                         addedBody.Rotation,
@@ -71,24 +129,19 @@ namespace BepuPhysicsUnity
                     addedBody.PhysicObjectAddedToSimulation(id);
 
                 }
-                AddedStaticBodies.Clear();
+                GetAddedStaticBodies().Clear();
 
             }
-        }
-
-        void UpdateBodiesUnity(int startingCount, int targetCount)
-        {
-
         }
 
         private void Update()
         {
-            lock (BodiesData)
+            lock (GetBodiesData())
             {
-                for (var i = 0; i < BodiesData.Count; i++)
+                for (var i = 0; i < GetBodiesData().Count; i++)
                 {
-                    if(BodiesData[i].IsAddedToSimulation)
-                        BodiesData[i].UpdateBodyLerped(StepsInterpolation);
+                    if(GetBodiesData()[i].IsAddedToSimulation)
+                        GetBodiesData()[i].UpdateBodyLerped(StepsInterpolation);
                 }
             }
         }

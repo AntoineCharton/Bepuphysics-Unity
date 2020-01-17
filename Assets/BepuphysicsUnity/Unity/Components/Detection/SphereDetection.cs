@@ -15,12 +15,9 @@ namespace BepuPhysicsUnity
             return Radius;
         }
 
-
-
-        void OnDrawGizmosSelected()
+        public void SetRadius(float radius)
         {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(transform.position, Radius);
+            Radius = radius;
         }
     }
 }

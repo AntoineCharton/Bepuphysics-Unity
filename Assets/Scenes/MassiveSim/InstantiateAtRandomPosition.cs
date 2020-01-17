@@ -27,7 +27,7 @@ public class InstantiateAtRandomPosition : MonoBehaviour
             var position = new Vector3(Random.Range(-randomRange, randomRange), Random.Range(-randomRange, randomRange), Random.Range(-randomRange, randomRange));
             Instantiate(prefab, position, Quaternion.identity);
             instantiatedObjects++;
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.025f);
         }
     }
 }

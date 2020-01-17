@@ -9,10 +9,10 @@ namespace BepuPhysicsUnity
         private List<BepuPhysicsUnity> PhysicsSpaces;
         private DetectionBehaviour Detection;
         [SerializeField]
-        private int ID;
+        private int ID = -1;
         private BepuPhysicsUnity physicSpace;
 
-        private void Awake()
+        private void OnEnable()
         {
             PhysicsSpaces = new List<BepuPhysicsUnity>(FindObjectsOfType<BepuPhysicsUnity>());
             Detection = GetComponent<DetectionBehaviour>();
@@ -21,6 +21,12 @@ namespace BepuPhysicsUnity
                 PhysicsSpaces[0].AddStaticShape(transform.position, transform.rotation, this, Detection, 0, OnShapeAdded);
                 physicSpace = PhysicsSpaces[0];
             }
+        }
+
+        void OnDisable()
+        {
+            if (ID != -1)
+                physicSpace.RemoveStaticBody(ID);
         }
 
         private void OnShapeAdded(int id)

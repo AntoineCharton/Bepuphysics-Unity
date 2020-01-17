@@ -6,7 +6,7 @@ using BepuUtilities;
 
 namespace BepuPhysicsUnity.Utilities
 {
-    public class SimpleThreadDispatcher : IThreadDispatcher, IDisposable
+    public sealed class SimpleThreadDispatcher : IThreadDispatcher, IDisposable
     {
         int threadCount;
         public int ThreadCount => threadCount;
