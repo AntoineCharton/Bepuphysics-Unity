@@ -47,13 +47,16 @@ namespace BepuPhysicsUnity
 
         protected void UpdatePhysics(float dT)
         {
-            lock (GetDynamicBodiesToRemove())
+            lock (GetDynamicBodiesToRemoveID())
             {
-                foreach(var body in GetDynamicBodiesToRemove())
+                foreach(var body in GetDynamicBodiesToRemoveID())
                 {
                     lock (GetBodiesData())
                     {
-                        Simulation.Bodies.Remove(body);
+                        lock (Simulation)
+                        {
+                            Simulation.Bodies.Remove(body);
+                        }
                         for (int i = 0; i < GetBodiesData().Count; i++)
                         {
                             if (GetBodiesData()[i].BodieID == body)
@@ -63,16 +66,19 @@ namespace BepuPhysicsUnity
                         }
                     }
                 }
-                GetDynamicBodiesToRemove().Clear();
+                GetDynamicBodiesToRemoveID().Clear();
             }
 
-            lock (GetStaticBodiesToRemove())
+            lock (GetStaticBodiesToRemoveID())
             {
-                foreach (var body in GetStaticBodiesToRemove())
+                foreach (var body in GetStaticBodiesToRemoveID())
                 {
                     lock (GetStaticBodiesData())
                     {
-                        Simulation.Statics.Remove(body);
+                        lock (Simulation)
+                        {
+                            Simulation.Statics.Remove(body);
+                        }
                         for (int i = 0; i < GetStaticBodiesData().Count; i++)
                         {
                             if (GetStaticBodiesData()[i].BodieID == body)
@@ -82,7 +88,7 @@ namespace BepuPhysicsUnity
                         }
                     }
                 }
-                GetStaticBodiesToRemove().Clear();
+                GetStaticBodiesToRemoveID().Clear();
             }
 
             UpdatePhysics(null, null, dT);

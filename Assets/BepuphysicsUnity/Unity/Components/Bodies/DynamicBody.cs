@@ -42,17 +42,17 @@ namespace BepuPhysicsUnity {
 
         public void SetMass(float mass)
         {
-            mass = Mass;
+            Mass = mass;
         }
 
-        public void AddForce(Vector3 vector3)
+        public void AddImpulse(Vector3 vector3)
         {
-
+            physicSpace.AddImpulse(vector3, ID);
         }
 
-        public void AddTorque(Vector3 vector3)
+        public void AddAngularImpulse(Vector3 vector3)
         {
-
+            physicSpace.AddAngularImpulse(vector3, ID);
         }
 
         public void SetPosition(Vector3 position)

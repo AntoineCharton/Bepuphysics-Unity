@@ -41,13 +41,13 @@ namespace BepuPhysicsUnity
         protected List<PhysicBodyData> GetAddedBodies() { return addedBodies; }
         protected void SetAddedBodies(List<PhysicBodyData> value){ addedBodies = value;}
 
-        private List<int> dynamicBodyToRemove;
-        protected List<int> GetDynamicBodiesToRemove() { return dynamicBodyToRemove; }
-        protected void SetDynamicBodiesToRemove(List<int> id) { dynamicBodyToRemove = id; }
+        private List<int> dynamicBodyToRemoveID;
+        protected List<int> GetDynamicBodiesToRemoveID() { return dynamicBodyToRemoveID; }
+        protected void SetDynamicBodiesToRemoveID(List<int> id) { dynamicBodyToRemoveID = id; }
 
-        private List<int> staticBodiesToRemove;
-        protected List<int> GetStaticBodiesToRemove() { return staticBodiesToRemove; }
-        protected void SetStaticBodiesToRemove(List<int> id) { staticBodiesToRemove = id; }
+        private List<int> staticBodiesToRemoveID;
+        protected List<int> GetStaticBodiesToRemoveID() { return staticBodiesToRemoveID; }
+        protected void SetStaticBodiesToRemoveID(List<int> id) { staticBodiesToRemoveID = id; }
 
         private List<BodyUpdateData> physicUpdates;
         protected List<BodyUpdateData> GetPhysicUpdates() { return physicUpdates; }
@@ -79,8 +79,8 @@ namespace BepuPhysicsUnity
             SetPhysicUpdates(new List<BodyUpdateData>());
             SetAddedStaticBodies(new List<PhysicBodyData>());
             SetStaticBodiesData(new List<BodyUpdateData>());
-            SetDynamicBodiesToRemove(new List<int>());
-            SetStaticBodiesToRemove(new List<int>());
+            SetDynamicBodiesToRemoveID(new List<int>());
+            SetStaticBodiesToRemoveID(new List<int>());
             isInitialized = true;
             BufferPool = new BufferPool();
             ThreadDispatcher = new SimpleThreadDispatcher(Environment.ProcessorCount);
@@ -124,19 +124,38 @@ namespace BepuPhysicsUnity
             }
         }
 
+        public void AddImpulse(Vector3 force, int ID)
+        {
+            lock (Simulation)
+            {
+                Simulation.Awakener.AwakenBody(ID);
+                Simulation.Bodies.GetBodyReference(ID).ApplyImpulse(new System.Numerics.Vector3(force.x, force.y, force.z), System.Numerics.Vector3.Zero);
+            }
+        }
+
+
+        public void AddAngularImpulse(Vector3 force, int ID)
+        {
+            lock (Simulation)
+            {
+                Simulation.Awakener.AwakenBody(ID);
+                Simulation.Bodies.GetBodyReference(ID).ApplyAngularImpulse(new System.Numerics.Vector3(force.x, force.y, force.z));
+            }
+        }
+
         public void RemoveStaticBody(int ID)
         {
-            lock (staticBodiesToRemove)
+            lock (staticBodiesToRemoveID)
             {
-                staticBodiesToRemove.Add(ID);
+                staticBodiesToRemoveID.Add(ID);
             }
         }
 
         public void RemoveDynamicBody(int ID)
         {
-            lock (dynamicBodyToRemove)
+            lock (dynamicBodyToRemoveID)
             {
-                dynamicBodyToRemove.Add(ID);
+                dynamicBodyToRemoveID.Add(ID);
             }
         }
 
