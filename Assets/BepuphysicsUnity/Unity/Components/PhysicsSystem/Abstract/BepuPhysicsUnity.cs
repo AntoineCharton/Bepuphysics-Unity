@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using BepuPhysicsUnity.Utilities;
 using System.Collections.Generic;
-using BepuPhysics.Collidables;
+using System.Threading.Tasks;
 
 namespace BepuPhysicsUnity
 {
@@ -140,6 +140,66 @@ namespace BepuPhysicsUnity
             {
                 Simulation.Awakener.AwakenBody(ID);
                 Simulation.Bodies.GetBodyReference(ID).ApplyAngularImpulse(new System.Numerics.Vector3(force.x, force.y, force.z));
+            }
+        }
+
+        public void SetPosition(Vector3 position, int ID)
+        {
+            lock (Simulation)
+            {
+                Simulation.Bodies.GetBodyReference(ID).GetDescription(out var description);
+                description.Pose.Position = new System.Numerics.Vector3(position.x, position.y, position.z);
+                Simulation.Bodies.GetBodyReference(ID).ApplyDescription(description);
+                lock (GetBodiesData())
+                {
+                    Parallel.ForEach(GetBodiesData(), bodyData =>
+                    {
+                        if (ID == bodyData.BodieID)
+                        {
+                            bodyData.SetPosition(position, false);
+                        }
+                    });
+                }
+            }
+        }
+
+        public void SetRotation(Quaternion rotation, int ID)
+        {
+            lock (Simulation)
+            {
+                Simulation.Bodies.GetBodyReference(ID).GetDescription(out var description);
+                description.Pose.Orientation = new BepuUtilities.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+                Simulation.Bodies.GetBodyReference(ID).ApplyDescription(description);
+                lock (GetBodiesData())
+                {
+                    Parallel.ForEach(GetBodiesData(), bodyData =>
+                    {
+                        if (ID == bodyData.BodieID)
+                        {
+                            bodyData.SetRotation(rotation, false);
+                        }
+                    });
+                }
+            }
+        }
+
+        public void SetAngularVelocity(Vector3 velocity, int ID)
+        {
+            lock (Simulation)
+            {
+                Simulation.Bodies.GetBodyReference(ID).GetDescription(out var description);
+                description.Velocity.Angular = new System.Numerics.Vector3(velocity.x, velocity.y, velocity.z);
+                Simulation.Bodies.GetBodyReference(ID).ApplyDescription(description);
+            }
+        }
+
+        public void SetVelocity(Vector3 velocity, int ID)
+        {
+            lock (Simulation)
+            {
+                Simulation.Bodies.GetBodyReference(ID).GetDescription(out var description);
+                description.Velocity.Linear = new System.Numerics.Vector3(velocity.x, velocity.y, velocity.z);
+                Simulation.Bodies.GetBodyReference(ID).ApplyDescription(description);
             }
         }
 

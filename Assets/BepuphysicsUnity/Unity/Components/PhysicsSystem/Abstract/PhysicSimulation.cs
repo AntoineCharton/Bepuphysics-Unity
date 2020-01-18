@@ -2,10 +2,7 @@
 using UnityEngine;
 using BepuphysicsUnity.Utilities;
 using System.Collections.Generic;
-using System.Threading;
-using System;
-using System.Collections;
-using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace BepuPhysicsUnity
 {
@@ -94,19 +91,20 @@ namespace BepuPhysicsUnity
             UpdatePhysics(null, null, dT);
             lock (GetBodiesData())
             {
-                for (var i = 0; i < GetBodiesData().Count; i++)
+                Parallel.ForEach(GetBodiesData(), body =>
                 {
-                    if (Simulation.Bodies.BodyExists(GetBodiesData()[i].BodieID))
+                    if (Simulation.Bodies.BodyExists(body.BodieID))
                     {
-                        Simulation.Bodies.GetDescription(GetBodiesData()[i].BodieID, out var BodyDescription);
-                        GetBodiesData()[i].IsAddedToSimulation = true;
-                        GetBodiesData()[i].SetPosition(new Vector3(BodyDescription.Pose.Position.X, BodyDescription.Pose.Position.Y, BodyDescription.Pose.Position.Z));
-                        GetBodiesData()[i].SetRotation(new Quaternion(BodyDescription.Pose.Orientation.X, BodyDescription.Pose.Orientation.Y, BodyDescription.Pose.Orientation.Z, BodyDescription.Pose.Orientation.W));
-                    } else
-                    {
-                        GetBodiesData()[i].IsAddedToSimulation = false;
+                        Simulation.Bodies.GetDescription(body.BodieID, out var BodyDescription);
+                        body.IsAddedToSimulation = true;
+                        body.SetPosition(new Vector3(BodyDescription.Pose.Position.X, BodyDescription.Pose.Position.Y, BodyDescription.Pose.Position.Z));
+                        body.SetRotation(new Quaternion(BodyDescription.Pose.Orientation.X, BodyDescription.Pose.Orientation.Y, BodyDescription.Pose.Orientation.Z, BodyDescription.Pose.Orientation.W));
                     }
-                }
+                    else
+                    {
+                        body.IsAddedToSimulation = false;
+                    }
+                });
             }
 
             lock (GetAddedBodies())

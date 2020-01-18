@@ -41,8 +41,8 @@ namespace BepuPhysicsUnity {
         {
             if (!isFirstBodyUpdate)
             {
-                CurrentPosition = Vector3.Lerp(CurrentPosition, TargetPosition, value);
-                CurrentRotation = Quaternion.Lerp(CurrentRotation, TargetRotation, value);
+                CurrentPosition = Vector3.Slerp(CurrentPosition, TargetPosition, value);
+                CurrentRotation = Quaternion.Slerp(CurrentRotation, TargetRotation, value);
             } else
             {
                 CurrentPosition = TargetPosition;

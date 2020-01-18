@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3725183214692272225}
   - component: {fileID: 8520119326288612204}
   - component: {fileID: 1754599866851601442}
-  - component: {fileID: 4629058720490593757}
+  - component: {fileID: 3379760999893599516}
   - component: {fileID: 313020854732031726}
   m_Layer: 0
   m_Name: Sphere
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4629058720490593757
+--- !u!114 &3379760999893599516
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c05876566e508249b2b7a46087b7e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 1
+  Mass: 1
 --- !u!114 &313020854732031726
 MonoBehaviour:
   m_ObjectHideFlags: 0

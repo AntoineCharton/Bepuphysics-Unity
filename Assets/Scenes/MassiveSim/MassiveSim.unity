@@ -1217,8 +1217,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Gravity: {x: 0, y: 10, z: 0}
-  StepsInterpolation: 0.02
-  TargetTimeStep: 0.075
+  StepsInterpolation: 0.116
+  TargetTimeStep: 0.1
   physicsElapsed: 0
   totalElapsed: 0
 --- !u!4 &801272971
@@ -1248,7 +1248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 8920147350363823717, guid: 4d7ffdfecc47e3d4593e113e626f67f8, type: 3}
-  numberOfPrefabs: 1000
+  numberOfPrefabs: 500
   instantiatedObjects: 0
   randomRange: 5
 --- !u!1 &857863554

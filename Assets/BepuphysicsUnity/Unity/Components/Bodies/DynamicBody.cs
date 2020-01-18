@@ -57,12 +57,22 @@ namespace BepuPhysicsUnity {
 
         public void SetPosition(Vector3 position)
         {
-
+            physicSpace.SetPosition(position, ID);
         }
 
         public void SetRotation(Quaternion rotation)
         {
+            physicSpace.SetRotation(rotation, ID);
+        }
 
+        public void SetAngularVelocity(Vector3 velocity)
+        {
+            physicSpace.SetAngularVelocity(velocity, ID);
+        }
+
+        public void SetVelocity(Vector3 velocity)
+        {
+            physicSpace.SetVelocity(velocity, ID);
         }
 
         private void OnShapeAdded(int id)
@@ -79,6 +89,11 @@ namespace BepuPhysicsUnity {
         public Vector3 GetAngularVelocity()
         {
             throw new System.NotImplementedException();
+        }
+
+        public int GetID()
+        {
+            return ID;
         }
     }
 }

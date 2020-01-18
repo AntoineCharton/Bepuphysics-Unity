@@ -4,10 +4,11 @@ using UnityEngine;
 public class AddForce : MonoBehaviour
 {
     public DynamicBody dynamicBody;
+    private Vector3 initialPosition;
     // Start is called before the first frame update
     void Start()
     {
-        
+        initialPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -20,7 +21,10 @@ public class AddForce : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space))
         {
-            dynamicBody.AddImpulse(new Vector3(0,1,0));
+            dynamicBody.SetPosition(initialPosition);
+            dynamicBody.SetRotation(Quaternion.identity);
+            dynamicBody.SetVelocity(Vector3.up);
+            dynamicBody.SetAngularVelocity(Vector3.zero);
         }
     }
 }
