@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BepuPhysicsUnity {
-    public class DynamicBody : PhysicBody, IDynamicBody, IBodyUpdate, IDynamicBodyControls, IBodyControls
+namespace BepuPhysicsUnity
+{
+    public class KynematicBody : PhysicBody, IKinematicBody, IBodyUpdate, IBodyControls
     {
         private List<BepuPhysicsUnity> PhysicsSpaces;
         private DetectionBehaviour Detection;
@@ -31,7 +32,7 @@ namespace BepuPhysicsUnity {
 
         void OnDisable()
         {
-            if(ID != -1)
+            if (ID != -1)
                 physicSpace.RemoveDynamicBody(ID);
         }
 
@@ -43,16 +44,6 @@ namespace BepuPhysicsUnity {
         public void SetMass(float mass)
         {
             Mass = mass;
-        }
-
-        public void AddImpulse(Vector3 vector3)
-        {
-            physicSpace.AddImpulse(vector3, ID);
-        }
-
-        public void AddAngularImpulse(Vector3 vector3)
-        {
-            physicSpace.AddAngularImpulse(vector3, ID);
         }
 
         public void SetPosition(Vector3 position)
@@ -75,12 +66,6 @@ namespace BepuPhysicsUnity {
             physicSpace.SetVelocity(velocity, ID);
         }
 
-        private void OnShapeAdded(int id)
-        {
-            ID = id;
-            physicSpace.SubscribePhysicsUpdate(this, id);
-        }
-
         public Vector3 GetVelocity()
         {
             return physicSpace.GetVelocity(ID);
@@ -89,6 +74,12 @@ namespace BepuPhysicsUnity {
         public Vector3 GetAngularVelocity()
         {
             return physicSpace.GetAngularVelocity(ID);
+        }
+
+        private void OnShapeAdded(int id)
+        {
+            ID = id;
+            physicSpace.SubscribePhysicsUpdate(this, id);
         }
 
         public int GetID()

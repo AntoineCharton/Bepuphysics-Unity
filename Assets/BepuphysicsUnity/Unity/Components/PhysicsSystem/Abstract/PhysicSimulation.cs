@@ -115,7 +115,9 @@ namespace BepuPhysicsUnity
                         addedBody.Rotation,
                         addedBody.BodyType,
                         addedBody.BodyShape,
+                        out bool isStatic,
                         addedBody.Mass);
+
                     addedBody.PhysicObjectAddedToSimulation(id);
                 }
                 GetAddedBodies().Clear();
@@ -129,12 +131,13 @@ namespace BepuPhysicsUnity
                         addedBody.Rotation,
                         addedBody.BodyType,
                         addedBody.BodyShape,
+                        out bool isStatic,
                         addedBody.Mass);
                     addedBody.PhysicObjectAddedToSimulation(id);
-
+            
                 }
                 GetAddedStaticBodies().Clear();
-
+            
             }
         }
 

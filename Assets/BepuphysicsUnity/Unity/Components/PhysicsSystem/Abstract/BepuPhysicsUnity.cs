@@ -116,7 +116,7 @@ namespace BepuPhysicsUnity
         {
             if (!isInitialized)
                 InitializePhysics();
-
+        
             var newBody = new PhysicBodyData(position, rotation, bodyType, bodyShape, mass, physicObjectAddedToSimulation);
             lock (GetAddedStaticBodies())
             {
@@ -200,6 +200,24 @@ namespace BepuPhysicsUnity
                 Simulation.Bodies.GetBodyReference(ID).GetDescription(out var description);
                 description.Velocity.Linear = new System.Numerics.Vector3(velocity.x, velocity.y, velocity.z);
                 Simulation.Bodies.GetBodyReference(ID).ApplyDescription(description);
+            }
+        }
+
+        public Vector3 GetVelocity(int ID)
+        {
+            lock (Simulation)
+            {
+                Simulation.Bodies.GetBodyReference(ID).GetDescription(out var description);
+                return new Vector3(description.Velocity.Linear.X, description.Velocity.Linear.Y, description.Velocity.Linear.Z);
+            }
+        }
+
+        public Vector3 GetAngularVelocity(int ID)
+        {
+            lock (Simulation)
+            {
+                Simulation.Bodies.GetBodyReference(ID).GetDescription(out var description);
+                return new Vector3(description.Velocity.Angular.X, description.Velocity.Angular.Y, description.Velocity.Angular.Z);
             }
         }
 

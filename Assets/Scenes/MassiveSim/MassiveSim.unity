@@ -1248,7 +1248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 8920147350363823717, guid: 4d7ffdfecc47e3d4593e113e626f67f8, type: 3}
-  numberOfPrefabs: 500
+  numberOfPrefabs: 2000
   instantiatedObjects: 0
   randomRange: 5
 --- !u!1 &857863554
