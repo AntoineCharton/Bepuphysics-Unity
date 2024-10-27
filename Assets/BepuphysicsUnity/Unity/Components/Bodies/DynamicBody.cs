@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BepuPhysics;
 using UnityEngine;
 
 namespace BepuPhysicsUnity {
@@ -9,7 +10,7 @@ namespace BepuPhysicsUnity {
         private DetectionBehaviour Detection;
         [SerializeField]
         private float Mass = 1;
-        private int ID = -1;
+        private BodyHandle ID;
         private BepuPhysicsUnity physicSpace;
 
         public void OnBodyUpdated(Vector3 position, Quaternion rotation)
@@ -31,7 +32,7 @@ namespace BepuPhysicsUnity {
 
         void OnDisable()
         {
-            if(ID != -1)
+            if(ID.Value != -1)
                 physicSpace.RemoveDynamicBody(ID);
         }
 
@@ -75,7 +76,7 @@ namespace BepuPhysicsUnity {
             physicSpace.SetVelocity(velocity, ID);
         }
 
-        private void OnShapeAdded(int id)
+        private void OnShapeAdded(BodyHandle id)
         {
             ID = id;
             physicSpace.SubscribePhysicsUpdate(this, id);
@@ -91,7 +92,7 @@ namespace BepuPhysicsUnity {
             return physicSpace.GetAngularVelocity(ID);
         }
 
-        public int GetID()
+        public BodyHandle GetID()
         {
             return ID;
         }

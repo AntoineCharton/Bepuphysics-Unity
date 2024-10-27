@@ -39,7 +39,7 @@ namespace BepuPhysicsUnity
         protected void SetupSimulation()
         {
             SetBodiesData(new List<BodyUpdateData>());
-            Simulation = Simulation.Create(BufferPool, new BepuNarrowPhaseCallbacks(), new BepuPoseIntegratorCallbacks(new System.Numerics.Vector3(Gravity.x, -Gravity.y, Gravity.z)));
+            //Simulation = Simulation.Create(BufferPool, new BepuNarrowPhaseCallbacks(), new BepuPoseIntegratorCallbacks(new System.Numerics.Vector3(Gravity.x, -Gravity.y, Gravity.z)));
         }
 
         protected void UpdatePhysics(float dT)
@@ -78,7 +78,7 @@ namespace BepuPhysicsUnity
                         }
                         for (int i = 0; i < GetStaticBodiesData().Count; i++)
                         {
-                            if (GetStaticBodiesData()[i].BodieID == body)
+                            if (GetStaticBodiesData()[i].StaticHandle == body)
                             {
                                 GetStaticBodiesData().RemoveAt(i);
                             }
@@ -127,13 +127,13 @@ namespace BepuPhysicsUnity
             {
                 foreach (var addedBody in GetAddedStaticBodies())
                 {
-                    var id = BodiesFactory.AddBody(Simulation, addedBody.Position,
+                    var id = BodiesFactory.AddStaticBody(Simulation, addedBody.Position,
                         addedBody.Rotation,
                         addedBody.BodyType,
                         addedBody.BodyShape,
                         out bool isStatic,
                         addedBody.Mass);
-                    addedBody.PhysicObjectAddedToSimulation(id);
+                    addedBody.StaticObjectAddedToSimulation(id);
             
                 }
                 GetAddedStaticBodies().Clear();

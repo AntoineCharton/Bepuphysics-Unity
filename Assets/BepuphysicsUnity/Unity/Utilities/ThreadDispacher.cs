@@ -9,7 +9,24 @@ namespace BepuPhysicsUnity.Utilities
     public sealed class SimpleThreadDispatcher : IThreadDispatcher, IDisposable
     {
         int threadCount;
+
+        public unsafe void DispatchWorkers(delegate*<int, IThreadDispatcher, void> workerBody, int maximumWorkerCount = 2147483647,
+            void* unmanagedContext = default(void*), object managedContext = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public unsafe void DispatchWorkers(Action<int> workerBody, int maximumWorkerCount = 2147483647, void* unmanagedContext = default(void*),
+            object managedContext = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public int ThreadCount => threadCount;
+        public unsafe void* UnmanagedContext { get; }
+        public object ManagedContext { get; }
+        public WorkerBufferPools WorkerPools { get; }
+
         struct Worker
         {
             public Thread Thread;

@@ -25,9 +25,9 @@ namespace BepuPhysicsUnity
         /// </summary>
         public SimpleThreadDispatcher ThreadDispatcher { get; private set; }
 
-        private List<PhysicBodyData> addedStaticBodies;
-        protected List<PhysicBodyData> GetAddedStaticBodies() { return addedStaticBodies; }
-        protected void SetAddedStaticBodies(List<PhysicBodyData> value) { addedStaticBodies = value; }
+        private List<StaticBodyData> addedStaticBodies;
+        protected List<StaticBodyData> GetAddedStaticBodies() { return addedStaticBodies; }
+        protected void SetAddedStaticBodies(List<StaticBodyData> value) { addedStaticBodies = value; }
 
         private List<BodyUpdateData> staticBodiesData;
         protected List<BodyUpdateData> GetStaticBodiesData() { return staticBodiesData; }
@@ -41,27 +41,29 @@ namespace BepuPhysicsUnity
         protected List<PhysicBodyData> GetAddedBodies() { return addedBodies; }
         protected void SetAddedBodies(List<PhysicBodyData> value){ addedBodies = value;}
 
-        private List<int> dynamicBodyToRemoveID;
-        protected List<int> GetDynamicBodiesToRemoveID() { return dynamicBodyToRemoveID; }
-        protected void SetDynamicBodiesToRemoveID(List<int> id) { dynamicBodyToRemoveID = id; }
+        private List<BodyHandle> dynamicBodyToRemoveID;
+        protected List<BodyHandle> GetDynamicBodiesToRemoveID() { return dynamicBodyToRemoveID; }
+        protected void SetDynamicBodiesToRemoveID(List<BodyHandle> id) { dynamicBodyToRemoveID = id; }
 
-        private List<int> staticBodiesToRemoveID;
-        protected List<int> GetStaticBodiesToRemoveID() { return staticBodiesToRemoveID; }
-        protected void SetStaticBodiesToRemoveID(List<int> id) { staticBodiesToRemoveID = id; }
+        private List<StaticHandle> staticBodiesToRemoveID;
+        protected List<StaticHandle> GetStaticBodiesToRemoveID() { return staticBodiesToRemoveID; }
+        protected void SetStaticBodiesToRemoveID(List<StaticHandle> id) { staticBodiesToRemoveID = id; }
 
         private List<BodyUpdateData> physicUpdates;
         protected List<BodyUpdateData> GetPhysicUpdates() { return physicUpdates; }
         protected void SetPhysicUpdates(List<BodyUpdateData> value) { physicUpdates = value; }
 
         bool isInitialized = false;
-        public delegate void PhysicObjectAddedToSimulation(int ID);
+        public delegate void PhysicObjectAddedToSimulation(BodyHandle ID);
+        
+        public delegate void StaticObjectAddedToSimulation(StaticHandle ID);
 
         private void Awake()
         {
             InitializePhysics();
         }
 
-        public void SubscribePhysicsUpdate(IBodyUpdate physicsUpdate, int bodieID)
+        public void SubscribePhysicsUpdate(IBodyUpdate physicsUpdate, BodyHandle bodieID)
         {
             var physicUpdate = new BodyUpdateData(physicsUpdate, bodieID);
             lock (GetBodiesData())
@@ -77,10 +79,10 @@ namespace BepuPhysicsUnity
 
             SetAddedBodies(new List<PhysicBodyData>());
             SetPhysicUpdates(new List<BodyUpdateData>());
-            SetAddedStaticBodies(new List<PhysicBodyData>());
+            SetAddedStaticBodies(new List<StaticBodyData>());
             SetStaticBodiesData(new List<BodyUpdateData>());
-            SetDynamicBodiesToRemoveID(new List<int>());
-            SetStaticBodiesToRemoveID(new List<int>());
+            SetDynamicBodiesToRemoveID(new List<BodyHandle>());
+            SetStaticBodiesToRemoveID(new List<StaticHandle>());
             isInitialized = true;
             BufferPool = new BufferPool();
             ThreadDispatcher = new SimpleThreadDispatcher(Environment.ProcessorCount);
@@ -112,19 +114,19 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public void AddStaticShape(Vector3 position, Quaternion rotation, object bodyType, object bodyShape, float mass, PhysicObjectAddedToSimulation physicObjectAddedToSimulation)
+        public void AddStaticShape(Vector3 position, Quaternion rotation, object bodyType, object bodyShape, float mass, StaticObjectAddedToSimulation staticObjectAddedToSimulation)
         {
             if (!isInitialized)
                 InitializePhysics();
         
-            var newBody = new PhysicBodyData(position, rotation, bodyType, bodyShape, mass, physicObjectAddedToSimulation);
+            var newBody = new StaticBodyData(position, rotation, bodyType, bodyShape, mass, staticObjectAddedToSimulation);
             lock (GetAddedStaticBodies())
             {
                 GetAddedStaticBodies().Add(newBody);
             }
         }
 
-        public void AddImpulse(Vector3 force, int ID)
+        public void AddImpulse(Vector3 force, BodyHandle ID)
         {
             lock (Simulation)
             {
@@ -134,7 +136,7 @@ namespace BepuPhysicsUnity
         }
 
 
-        public void AddAngularImpulse(Vector3 force, int ID)
+        public void AddAngularImpulse(Vector3 force, BodyHandle ID)
         {
             lock (Simulation)
             {
@@ -143,7 +145,7 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public void SetPosition(Vector3 position, int ID)
+        public void SetPosition(Vector3 position, BodyHandle ID)
         {
             lock (Simulation)
             {
@@ -163,12 +165,12 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public void SetRotation(Quaternion rotation, int ID)
+        public void SetRotation(Quaternion rotation, BodyHandle ID)
         {
             lock (Simulation)
             {
                 Simulation.Bodies.GetBodyReference(ID).GetDescription(out var description);
-                description.Pose.Orientation = new BepuUtilities.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+                description.Pose.Orientation = new System.Numerics.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
                 Simulation.Bodies.GetBodyReference(ID).ApplyDescription(description);
                 lock (GetBodiesData())
                 {
@@ -183,7 +185,7 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public void SetAngularVelocity(Vector3 velocity, int ID)
+        public void SetAngularVelocity(Vector3 velocity, BodyHandle ID)
         {
             lock (Simulation)
             {
@@ -193,7 +195,7 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public void SetVelocity(Vector3 velocity, int ID)
+        public void SetVelocity(Vector3 velocity, BodyHandle ID)
         {
             lock (Simulation)
             {
@@ -203,7 +205,7 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public Vector3 GetVelocity(int ID)
+        public Vector3 GetVelocity(BodyHandle ID)
         {
             lock (Simulation)
             {
@@ -212,7 +214,7 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public Vector3 GetAngularVelocity(int ID)
+        public Vector3 GetAngularVelocity(BodyHandle ID)
         {
             lock (Simulation)
             {
@@ -221,7 +223,7 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public void RemoveStaticBody(int ID)
+        public void RemoveStaticBody(StaticHandle ID)
         {
             lock (staticBodiesToRemoveID)
             {
@@ -229,7 +231,7 @@ namespace BepuPhysicsUnity
             }
         }
 
-        public void RemoveDynamicBody(int ID)
+        public void RemoveDynamicBody(BodyHandle ID)
         {
             lock (dynamicBodyToRemoveID)
             {

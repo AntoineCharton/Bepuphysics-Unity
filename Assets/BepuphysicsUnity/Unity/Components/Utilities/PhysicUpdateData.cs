@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BepuPhysics;
 using UnityEngine;
 
 namespace BepuPhysicsUnity {
     public class BodyUpdateData
     {
         public IBodyUpdate PhysicsUpdate;
-        public int BodieID;
+        public BodyHandle BodieID;
+        public StaticHandle StaticHandle;
         public Vector3 TargetPosition;
         public Vector3 CurrentPosition;
         public Quaternion TargetRotation;
@@ -14,7 +16,7 @@ namespace BepuPhysicsUnity {
         public bool IsAddedToSimulation;
         private bool isFirstBodyUpdate = true;
 
-        public BodyUpdateData(IBodyUpdate physicsUpdate, int bodieID, Vector3 position, Quaternion rotation) 
+        public BodyUpdateData(IBodyUpdate physicsUpdate, BodyHandle bodieID, Vector3 position, Quaternion rotation) 
         {
             PhysicsUpdate = physicsUpdate;
             BodieID = bodieID;
@@ -23,7 +25,7 @@ namespace BepuPhysicsUnity {
             IsAddedToSimulation = false;
         }
 
-        public BodyUpdateData(IBodyUpdate physicsUpdate, int bodieID)
+        public BodyUpdateData(IBodyUpdate physicsUpdate, BodyHandle bodieID)
         {
             PhysicsUpdate = physicsUpdate;
             BodieID = bodieID;

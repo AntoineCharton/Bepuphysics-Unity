@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BepuPhysics;
 using UnityEngine;
 
 namespace BepuPhysicsUnity
@@ -9,7 +10,7 @@ namespace BepuPhysicsUnity
         private List<BepuPhysicsUnity> PhysicsSpaces;
         private DetectionBehaviour Detection;
         [SerializeField]
-        private int ID = -1;
+        private StaticHandle ID;
         private BepuPhysicsUnity physicSpace;
 
         private void OnEnable()
@@ -25,11 +26,11 @@ namespace BepuPhysicsUnity
 
         void OnDisable()
         {
-            if (ID != -1)
+            if (ID.Value != -1)
                 physicSpace.RemoveStaticBody(ID);
         }
 
-        private void OnShapeAdded(int id)
+        private void OnShapeAdded(StaticHandle id)
         {
             ID = id;
         }
